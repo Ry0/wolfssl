@@ -1,6 +1,6 @@
 /* sha.h
  *
- * Copyright (C) 2006-2020 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -72,12 +72,6 @@
 #ifdef WOLFSSL_ESP32WROOM32_CRYPT
     #include <wolfssl/wolfcrypt/port/Espressif/esp32-crypt.h>
 #endif
-#ifdef WOLFSSL_IMXRT_DCP
-    #include <wolfssl/wolfcrypt/port/nxp/dcp_port.h>
-#endif
-#if defined(WOLFSSL_SILABS_SE_ACCEL)
-    #include <wolfssl/wolfcrypt/port/silabs/silabs_hash.h>
-#endif
 
 #if !defined(NO_OLD_SHA_NAMES)
     #define SHA             WC_SHA
@@ -107,8 +101,6 @@ enum {
 #elif defined(WOLFSSL_RENESAS_TSIP_CRYPT) && \
    !defined(NO_WOLFSSL_RENESAS_TSIP_CRYPT_HASH)
     #include "wolfssl/wolfcrypt/port/Renesas/renesas-tsip-crypt.h"
-#elif defined(WOLFSSL_PSOC6_CRYPTO)
-    #include "wolfssl/wolfcrypt/port/cypress/psoc6_crypto.h"
 #else
 
 /* Sha digest */
@@ -117,8 +109,6 @@ struct wc_Sha {
         ltc_hash_ctx_t ctx;
 #elif defined(STM32_HASH)
         STM32_HASH_Context stmCtx;
-#elif defined(WOLFSSL_SILABS_SE_ACCEL)
-        wc_silabs_sha_t silabsCtx;
 #else
         word32  buffLen;   /* in bytes          */
         word32  loLen;     /* length in bytes   */

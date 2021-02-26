@@ -1,6 +1,6 @@
 /* rsa.h
  *
- * Copyright (C) 2006-2020 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -23,13 +23,7 @@
     \file wolfssl/wolfcrypt/rsa.h
 */
 
-/*
 
-DESCRIPTION
-This library provides the interface to the RSA.
-RSA keys can be used to encrypt, decrypt, sign and verify data.
-
-*/
 #ifndef WOLF_CRYPT_RSA_H
 #define WOLF_CRYPT_RSA_H
 
@@ -141,9 +135,8 @@ enum {
     RSA_PSS_SALT_LEN_DISCOVER = -2,
 #endif
 
-#ifdef WOLF_CRYPTO_CB
+#ifdef HAVE_PKCS11
     RSA_MAX_ID_LEN      = 32,
-    RSA_MAX_LABEL_LEN   = 32,
 #endif
 };
 
@@ -185,11 +178,9 @@ struct RsaKey {
     byte*  mod;
     XSecure_Rsa xRsa;
 #endif
-#ifdef WOLF_CRYPTO_CB
+#ifdef HAVE_PKCS11
     byte id[RSA_MAX_ID_LEN];
     int  idLen;
-    char label[RSA_MAX_LABEL_LEN];
-    int  labelLen;
 #endif
 #if defined(WOLFSSL_ASYNC_CRYPT) || !defined(WOLFSSL_RSA_VERIFY_INLINE)
     byte   dataIsAlloc;
@@ -216,11 +207,9 @@ struct RsaKey {
 WOLFSSL_API int  wc_InitRsaKey(RsaKey* key, void* heap);
 WOLFSSL_API int  wc_InitRsaKey_ex(RsaKey* key, void* heap, int devId);
 WOLFSSL_API int  wc_FreeRsaKey(RsaKey* key);
-#ifdef WOLF_CRYPTO_CB
+#ifdef HAVE_PKCS11
 WOLFSSL_API int wc_InitRsaKey_Id(RsaKey* key, unsigned char* id, int len,
                                  void* heap, int devId);
-WOLFSSL_API int wc_InitRsaKey_Label(RsaKey* key, const char* label, void* heap,
-                                    int devId);
 #endif
 WOLFSSL_API int  wc_CheckRsaKey(RsaKey* key);
 #ifdef WOLFSSL_XILINX_CRYPT
@@ -249,11 +238,6 @@ WOLFSSL_API int  wc_RsaSSL_VerifyInline(byte* in, word32 inLen, byte** out,
                                     RsaKey* key);
 WOLFSSL_API int  wc_RsaSSL_Verify(const byte* in, word32 inLen, byte* out,
                               word32 outLen, RsaKey* key);
-WOLFSSL_API int  wc_RsaSSL_Verify_ex(const byte* in, word32 inLen, byte* out,
-                              word32 outLen, RsaKey* key, int pad_type);
-WOLFSSL_API int  wc_RsaSSL_Verify_ex2(const byte* in, word32 inLen, byte* out,
-                              word32 outLen, RsaKey* key, int pad_type,
-                              enum wc_HashType hash);
 WOLFSSL_API int  wc_RsaPSS_VerifyInline(byte* in, word32 inLen, byte** out,
                                         enum wc_HashType hash, int mgf,
                                         RsaKey* key);
@@ -365,17 +349,6 @@ WOLFSSL_API int wc_RsaKeyToPublicDer(RsaKey*, byte* output, word32 inLen);
                                           const byte* e, word32 eSz,
                                           int nlen, int* isPrime);
 #endif
-
-WOLFSSL_LOCAL int wc_RsaPad_ex(const byte* input, word32 inputLen, byte* pkcsBlock,
-        word32 pkcsBlockLen, byte padValue, WC_RNG* rng, int padType,
-        enum wc_HashType hType, int mgf, byte* optLabel, word32 labelLen,
-        int saltLen, int bits, void* heap);
-WOLFSSL_LOCAL int wc_RsaUnPad_ex(byte* pkcsBlock, word32 pkcsBlockLen, byte** out,
-                                   byte padValue, int padType, enum wc_HashType hType,
-                                   int mgf, byte* optLabel, word32 labelLen, int saltLen,
-                                   int bits, void* heap);
-
-WOLFSSL_LOCAL int wc_hash2mgf(enum wc_HashType hType);
 
 #endif /* HAVE_USER_RSA */
 

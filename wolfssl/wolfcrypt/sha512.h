@@ -1,6 +1,6 @@
 /* sha512.h
  *
- * Copyright (C) 2006-2020 wolfSSL Inc.
+ * Copyright (C) 2006-2019 wolfSSL Inc.
  *
  * This file is part of wolfSSL.
  *
@@ -30,7 +30,6 @@
 #include <wolfssl/wolfcrypt/types.h>
 
 #if defined(WOLFSSL_SHA512) || defined(WOLFSSL_SHA384)
-
 
 #if defined(HAVE_FIPS) && \
     defined(HAVE_FIPS_VERSION) && (HAVE_FIPS_VERSION >= 2)
@@ -76,10 +75,6 @@
 #ifdef WOLFSSL_ESP32WROOM32_CRYPT
     #include <wolfssl/wolfcrypt/port/Espressif/esp32-crypt.h>
 #endif
-#if defined(WOLFSSL_SILABS_SE_ACCEL)
-    #include <wolfssl/wolfcrypt/port/silabs/silabs_hash.h>
-#endif
-
 #if defined(_MSC_VER)
     #define SHA512_NOINLINE __declspec(noinline)
 #elif defined(__IAR_SYSTEMS_ICC__) || defined(__GNUC__)
@@ -116,8 +111,6 @@ enum {
 
 #ifdef WOLFSSL_IMX6_CAAM
     #include "wolfssl/wolfcrypt/port/caam/wolfcaam_sha.h"
-#elif defined (WOLFSSL_PSOC6_CRYPTO)
-    #include "wolfssl/wolfcrypt/port/cypress/psoc6_crypto.h"
 #else
 /* wc_Sha512 digest */
 struct wc_Sha512 {
@@ -140,10 +133,6 @@ struct wc_Sha512 {
    !defined(NO_WOLFSSL_ESP32WROOM32_CRYPT_HASH)
     WC_ESP32SHA ctx;
 #endif
-#if defined(WOLFSSL_SILABS_SE_ACCEL)
-  wc_silabs_sha_t silabsCtx;
-#endif
-
 #if defined(WOLFSSL_HASH_FLAGS) || defined(WOLF_CRYPTO_CB)
     word32 flags; /* enum wc_HashFlags in hash.h */
 #endif
@@ -163,7 +152,6 @@ WOLFSSL_LOCAL void Transform_Sha512_Len(wc_Sha512* sha512, const byte* data,
 #endif
 
 #ifdef WOLFSSL_SHA512
-
 
 WOLFSSL_API int wc_InitSha512(wc_Sha512*);
 WOLFSSL_API int wc_InitSha512_ex(wc_Sha512*, void*, int);
